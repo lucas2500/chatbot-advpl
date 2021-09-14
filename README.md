@@ -9,6 +9,6 @@
 
 **Referências:**
 
-https://core.telegram.org/bots/api\
+https://core.telegram.org/bots/api <br />
 https://core.telegram.org/bots/api#setwebhook\
 https://ngrok.com
