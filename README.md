@@ -1,4 +1,4 @@
-# CHATBOT NO O TELEGRAM EM ADVPL
+# CHATBOT NO TELEGRAM EM ADVPL
 
 **Requisitos para o funcionamento:** 
 
