@@ -69,17 +69,17 @@ Return .T.
 
 Static Function SendMsg(cMsg)
 
-	Local oRequest  := Nil
-	Local lRet      := .F.
+	Local oRequest := Nil
+	Local lRet     := .F.
 
 	// Endpoint do Telegram
-	Local cTelAPI   := SuperGetMV("VAR_TEL", .F., "https://api.telegram.org/")
+	Local cTelAPI  := SuperGetMV("VAR_TEL", .F., "https://api.telegram.org/")
 
 	// ID do bot do Telegram
-	Local BotID     := SuperGetMV("VAR_BOTID", .F., "")
+	Local BotID    := SuperGetMV("VAR_BOTID", .F., "")
 
 	// ID do chat do Telegram
-	Local ChatId    := SuperGetMV("VAR_CHAT", .F., "")
+	Local ChatId   := SuperGetMV("VAR_CHAT", .F., "")
 
 	oRequest := FWRest():New(cTelAPI)
 	oRequest:setPath("bot" + BotID + "/sendMessage" + "?chat_id=" + ChatId + "&text=" + cMsg + "&parse_mode=html")
