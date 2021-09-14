@@ -20,9 +20,12 @@ WSMETHOD POST WSRECEIVE WSSERVICE PostMessage
 	Local oJsonRet := JSonObject():New()
 	Local cJson    := ""
 	Local cMsg     := ""
+	Local cChatID  := ""
 	Local nI       := 0
 
 	oJson:FromJson(cBody)
+
+	cChatID := cValToChar(oJson["message"]["chat"]["id"])
 
 	DO CASE
 
@@ -53,7 +56,7 @@ WSMETHOD POST WSRECEIVE WSSERVICE PostMessage
 
 	END CASE
 
-	If SendMsg(EncodeUTF8(cMsg))
+	If SendMsg(EncodeUTF8(cMsg), cChatID)
 		oJsonRet["BotResponse"] := oJson["message"]["text"]
 		Self:SetStatus(200)
 	Else
@@ -67,7 +70,7 @@ WSMETHOD POST WSRECEIVE WSSERVICE PostMessage
 
 Return .T.
 
-Static Function SendMsg(cMsg)
+Static Function SendMsg(cMsg, cChatID)
 
 	Local oRequest := Nil
 	Local lRet     := .F.
@@ -78,11 +81,8 @@ Static Function SendMsg(cMsg)
 	// ID do bot do Telegram
 	Local BotID    := SuperGetMV("VAR_BOTID", .F., "")
 
-	// ID do chat do Telegram
-	Local ChatId   := SuperGetMV("VAR_CHAT", .F., "")
-
 	oRequest := FWRest():New(cTelAPI)
-	oRequest:setPath("bot" + BotID + "/sendMessage" + "?chat_id=" + ChatId + "&text=" + cMsg + "&parse_mode=html")
+	oRequest:setPath("bot" + BotID + "/sendMessage" + "?chat_id=" + cChatID + "&text=" + cMsg + "&parse_mode=html")
 
 	If oRequest:Get()
 		FwLogMsg("INFO", /*cTransactionId*/, "JOBCTCOIN", FunName(), "", "01", "Notifcacao enviada para o Telegram!!")
