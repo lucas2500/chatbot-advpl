@@ -4,7 +4,7 @@
 
 WSRESTFUL PostMessage DESCRIPTION "API que recebe as requisições da WebHook do Telegram"
 
-	WSMETHOD POST DESCRIPTION "API que recebe as requisições da WebHook do Telegram" WSSYNTAX "/PostMessage"
+	WSMETHOD POST DESCRIPTION "Recebe e trata o body enviado pelo Telegram" WSSYNTAX "/PostMessage"
 
 END WSRESTFUL
 
@@ -15,16 +15,33 @@ WSMETHOD POST WSRECEIVE WSSERVICE PostMessage
 	Local oJsonRet := JSonObject():New()
 	Local cJson    := ""
 	Local cMsg     := ""
+	Local nI       := 0
 
 	oJson:FromJson(cBody)
 
 	DO CASE
 
-	CASE DecodeUTF8(oJson["message"]["text"]) == "Olá"
-		cMsg := "Olá visitante!!"
+	CASE Lower(DecodeUTF8(oJson["message"]["text"])) == "olá" .OR. Lower(DecodeUTF8(oJson["message"]["text"])) == "boa noite"
 
-	CASE oJson["message"]["text"] == "Boa noite"
-		cMsg := "Boa noite visitante!!"
+		cMsg := "Olá visitante!!%0A"
+		cMsg += "<b>Selecione uma das opções abaixo:</b>%0A%0A"
+		cMsg += "1 - Me diga qual a data de hoje%0A"
+		cMsg += "2 - Conte de 1 até 10%0A"
+		cMsg += "3 - Me diga qual é o sentido da vida"
+
+	CASE Lower(DecodeUTF8(oJson["message"]["text"])) == "1"
+
+		cMsg := DTOC(dDatabase)
+
+	CASE Lower(DecodeUTF8(oJson["message"]["text"])) == "2"
+
+		For nI := 1 To 10
+			cMsg += cValToChar(nI) + "%0A"
+		Next nI
+
+	CASE Lower(DecodeUTF8(oJson["message"]["text"])) == "3"
+
+		cMsg := "Com toda certeza o sentido da vida é: " + LifeMean()
 
 	OTHERWISE
 		cMsg := "Não entendi o que você quis dizer :/"
@@ -70,3 +87,24 @@ Static Function SendMsg(cMsg)
 	Endif
 
 Return lRet
+
+Static Function LifeMean()
+
+	Local nRandom   := 0
+	Local cLifeMean := ""
+	Local aLifeMean := {;
+		"Maratonar a versão estendida de O Senhor dos Anéis",; 
+		"Definir cronograma sem estimar esforço",; 
+		"Programar chatbots no sábado à noite",; 
+		"Ver o Palmeiras ser campeão mundial",;
+		"Terminar de assistir One Piece",; 
+		"Fazer um update sem where",; 
+		"Tunar um Corsa 2005",;
+		"Trabalhar na TOTVS",;
+		"Aprender ADVPL"}
+
+	nRandom := Randomize(1, Len(aLifeMean))
+
+	cLifeMean := aLifeMean[nRandom]
+	
+Return cLifeMean
